@@ -90,7 +90,7 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form1
+            // FormP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -100,7 +100,8 @@
             this.Controls.Add(this.timer_label);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.hint);
-            this.Name = "Sudoku";
+            this.Name = "FormP";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sudoku";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

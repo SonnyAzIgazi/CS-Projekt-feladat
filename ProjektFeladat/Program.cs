@@ -16,7 +16,7 @@ namespace ProjektFeladat
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormP());
+            Application.Run(new Form1());
         }
     }
 }
