@@ -25,32 +25,28 @@ namespace ProjektFeladat
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            FormV xd = new FormV();
-            xd.ShowDialog(this);
+            new FormA().ShowDialog(this);
             this.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             this.Hide();
-            FormP xd = new FormP();
-            xd.ShowDialog(this);
+            new FormP().ShowDialog(this);
             this.Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             this.Hide();
-            FormV xd = new FormV();
-            xd.ShowDialog(this);
+            new FormV().ShowDialog(this);
             this.Show();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             this.Hide();
-            FormV xd = new FormV();
-            xd.ShowDialog(this);
+            new FormV().ShowDialog(this);
             this.Show();
         }
     }
