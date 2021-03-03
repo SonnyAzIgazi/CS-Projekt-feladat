@@ -18,23 +18,146 @@ namespace ProjektFeladat
             this.Shown += FormA_Load;
         }
 
-        private bool[,] hidden;
-        private bool[,] bomb;
-        private int[,] nums;
-        private CheckBox flag;
-        private Button[,] buttons;
-
         private const int size = 10;
         private const int buttonSize = 30;
         private const int spaceSize = 0;
+        private const int bombs = 10;
+
+        private bool[,] hidden = new bool[size, size];
+        private bool[,] bomb = new bool[size, size];
+        private bool[,] flagged = new bool[size, size];
+        private int[,] nums = new int[size, size];
+        private CheckBox flag = new CheckBox();
+        private Label lbl = new Label();
+        private List<List<Button>> buttons = new List<List<Button>>(); // eredetileg sima arrayt akartam hasznalni itt is de abban nem lehet pointerkent tarolni oket a list meg automatikusan pointerkent tarolja
+
+        private bool running = true;
+        private Random rand = new Random();
 
         private void buttonClick(object sender, EventArgs e)
         {
-            Button pressedButton = sender as Button;
-            int x = (pressedButton.Location.X - 5) / (buttonSize + spaceSize);
-            int y = (pressedButton.Location.Y - 25) / (buttonSize + spaceSize);
-            MessageBox.Show(Convert.ToString(x) + " " + Convert.ToString(y));
+            if (running)
+            {
+                Button pressedButton = sender as Button;
+                int x = (pressedButton.Location.X - 5) / (buttonSize + spaceSize);
+                int y = (pressedButton.Location.Y - 25) / (buttonSize + spaceSize);
+                if (flag.Checked) // Ha jeloles
+                {
+                    if (hidden[x, y])
+                    {
+                        if (flagged[x, y])
+                        {
+                            buttons[x][y].Text = "";
+                        }
+                        else
+                        {
+                            buttons[x][y].Text = "\u03D3";
+                        }
+                        flagged[x, y] = !(flagged[x, y]);
+                        lbl.Text = "Bomba: " + Convert.ToString(countFlags()) + "/" + Convert.ToString(bombs);
+                    }
+                }
+                else
+                {
+                    if (!flagged[x, y])
+                    {
+                        if (hidden[x, y])
+                        {
+                            if (bomb[x, y])
+                            {
+                                MessageBox.Show("Veszitettel");
+                                buttons[x][y].Text = "✸";
+                                running = false;
+                            } else
+                            {
+                                felfedes(x, y);
+                            }
+                        }
+                    }
+                }
+                if (checkWin())
+                {
+                    MessageBox.Show("Nyertel");
+                    running = false;
+                }
+            }
 
+        }
+        private bool checkWin()
+        {
+            bool winning = true;
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    if (bomb[x,y])
+                    {
+                        if (!flagged[x,y])
+                        {
+                            winning = false;
+                        }
+                    } else
+                    {
+                        if (flagged[x,y])
+                        {
+                            winning = false;
+                        }
+                        if (hidden[x,y])
+                        {
+                            winning = false;
+                        }
+                    }
+                }
+            }
+            return winning;
+        }
+        private void felfedes(int x, int y)
+        {
+            if (flagged[x,y])
+            {
+                flagged[x, y] = false;
+                lbl.Text = "Bomba: " + Convert.ToString(countFlags()) + "/" + Convert.ToString(bombs);
+            }
+            if (hidden[x,y])
+            {
+                if (nums[x, y] == 0)
+                {
+                    buttons[x][y].BackColor = Color.White;
+                    hidden[x, y] = false;
+                    for (int xp = -1; xp <= 1; xp++)
+                    {
+                        for (int yp = -1; yp <= 1; yp++)
+                        {
+                            if (x + xp >= 0 && y + yp >= 0 && x + xp < size && y + yp < size && !(xp == 0 && yp == 0))
+                            {
+                                felfedes(x + xp, y + yp);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    hidden[x, y] = false;
+                    buttons[x][y].Text = Convert.ToString(nums[x, y]);
+                    buttons[x][y].ForeColor = getColorFromInt(nums[x, y]);
+                    buttons[x][y].BackColor = Color.White;
+                }
+            }
+        }
+        private int countFlags()
+        {
+            int flags = 0;
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    if (flagged[x,y])
+                    {
+                        flags++;
+                    }
+                }
+            }
+            return flags;
         }
         private void quitButton(object sender, EventArgs e)
         {
@@ -68,14 +191,7 @@ namespace ProjektFeladat
 
         private void FormA_Load(object sender, EventArgs e)
         {
-            bomb = new bool[100,100];
-
-            
-
-            buttons = new Button[size, size];
-
             this.Size = new Size(size * (buttonSize + spaceSize) + 100, size * (buttonSize + spaceSize) + 28);
-
             this.CenterToScreen();
 
             Button quit = new Button();
@@ -90,19 +206,18 @@ namespace ProjektFeladat
             quit.Click += new System.EventHandler(this.quitButton);
             this.Controls.Add(quit);
 
-            flag = new CheckBox();
             flag.Text = "Flag";
             flag.Location = new Point(size * (buttonSize + spaceSize) + 10, 30);
             this.Controls.Add(flag);
 
-            Label lbl = new Label();
-            lbl.Text = "Bomba: 0/10";
+            lbl.Text = "Bomba: 0/" + Convert.ToString(bombs);
             lbl.Location = new Point(size * (buttonSize + spaceSize) + 10, 60);
             this.Controls.Add(lbl);
 
-
+            // gombok letrehozasa
             for (int x = 0; x < size; x++)
             {
+                List<Button> gombsor = new List<Button>();
                 for (int y = 0; y < size; y++)
                 {
                     Button btn = new Button();
@@ -110,19 +225,80 @@ namespace ProjektFeladat
                     btn.Size = new Size(buttonSize, buttonSize);
                     btn.BackColor = Color.DarkGray;
                     btn.FlatStyle = FlatStyle.Flat;
-                    btn.Text = "1";
-                    btn.AccessibleName = "csa";
+                    btn.Text = "";
                     btn.UseCompatibleTextRendering = true;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
                     System.EventArgs xd = new System.EventArgs();
                     btn.Click += new System.EventHandler(this.buttonClick);
                     this.Controls.Add(btn);
-                    buttons[x, y] = btn;
+                    gombsor.Add(btn);
+                }
+                buttons.Add(gombsor);
+            }
+
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    bomb[x, y] = false;
                 }
             }
 
+            //bombak generalasa
+            int bombakszama = 0;
+            while (bombakszama < bombs)
+            {
+                int bx = rand.Next(size);
+                int by = rand.Next(size);
+                if (!bomb[bx, by])
+                {
+                    bomb[bx, by] = true;
+                    buttons[bx][by].Text = "";
+                    bombakszama = bombakszama + 1;
+                }
+            }
 
+            //Szamok generalasa
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    int bombCount = 0;
+                    for (int xp = -1; xp <= 1; xp++)
+                    {
+                        for (int yp = -1; yp <= 1; yp++)
+                        {
+                            if (x + xp >= 0 && y + yp >= 0 && x + xp < size && y + yp < size)
+                            {
+                                if (bomb[x+xp, y+yp])
+                                {
+                                    bombCount++;
+                                }
+                            }
+                        }
+                    }
+                    nums[x, y] = bombCount;
+                }
+            }
+
+            //Minden hidden
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    hidden[x, y] = true;
+                }
+            }
+
+            //Semmise flagged
+            for (int x = 0; x < size; x++)
+            {
+                for (int y = 0; y < size; y++)
+                {
+                    flagged[x, y] = false;
+                }
+            }
         }
     }
 }
