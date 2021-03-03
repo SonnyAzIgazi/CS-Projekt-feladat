@@ -49,14 +49,12 @@
             this.label_gameover = new System.Windows.Forms.Label();
             this.button_newgame = new System.Windows.Forms.Button();
             this.button_exit = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label_score = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.label_best_score = new System.Windows.Forms.Label();
+            this.label_moves = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -295,7 +293,7 @@
             this.button_newgame.Name = "button_newgame";
             this.button_newgame.Size = new System.Drawing.Size(100, 30);
             this.button_newgame.TabIndex = 19;
-            this.button_newgame.Text = "New game";
+            this.button_newgame.Text = "Új játék";
             this.button_newgame.UseVisualStyleBackColor = true;
             this.button_newgame.Click += new System.EventHandler(this.button_newgame_Click);
             // 
@@ -305,29 +303,9 @@
             this.button_exit.Name = "button_exit";
             this.button_exit.Size = new System.Drawing.Size(100, 30);
             this.button_exit.TabIndex = 20;
-            this.button_exit.Text = "Exit";
+            this.button_exit.Text = "Kilépés";
             this.button_exit.UseVisualStyleBackColor = true;
             this.button_exit.Click += new System.EventHandler(this.button18_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(436, 228);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(122, 25);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "Games won:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(436, 253);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(116, 25);
-            this.label4.TabIndex = 24;
-            this.label4.Text = "Games lost:";
             // 
             // label7
             // 
@@ -335,9 +313,9 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(8, 12);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(85, 31);
+            this.label7.Size = new System.Drawing.Size(70, 31);
             this.label7.TabIndex = 26;
-            this.label7.Text = "Score";
+            this.label7.Text = "Pont";
             this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // label_score
@@ -363,7 +341,7 @@
             // panel3
             // 
             this.panel3.Controls.Add(this.label1);
-            this.panel3.Controls.Add(this.label_best_score);
+            this.panel3.Controls.Add(this.label_moves);
             this.panel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel3.Location = new System.Drawing.Point(545, 122);
             this.panel3.Name = "panel3";
@@ -376,19 +354,19 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(8, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 31);
+            this.label1.Size = new System.Drawing.Size(88, 31);
             this.label1.TabIndex = 26;
-            this.label1.Text = "Best";
+            this.label1.Text = "Lépés";
             // 
-            // label_best_score
+            // label_moves
             // 
-            this.label_best_score.AutoSize = true;
-            this.label_best_score.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_best_score.Location = new System.Drawing.Point(8, 43);
-            this.label_best_score.Name = "label_best_score";
-            this.label_best_score.Size = new System.Drawing.Size(30, 31);
-            this.label_best_score.TabIndex = 27;
-            this.label_best_score.Text = "0";
+            this.label_moves.AutoSize = true;
+            this.label_moves.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_moves.Location = new System.Drawing.Point(8, 43);
+            this.label_moves.Name = "label_moves";
+            this.label_moves.Size = new System.Drawing.Size(30, 31);
+            this.label_moves.TabIndex = 27;
+            this.label_moves.Text = "0";
             // 
             // FormV
             // 
@@ -397,8 +375,6 @@
             this.BackColor = System.Drawing.Color.Ivory;
             this.ClientSize = new System.Drawing.Size(662, 436);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.button_exit);
             this.Controls.Add(this.button_newgame);
             this.Controls.Add(this.label_gameover);
@@ -444,13 +420,11 @@
 		private System.Windows.Forms.Label label_gameover;
 		private System.Windows.Forms.Button button_newgame;
 		private System.Windows.Forms.Button button_exit;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label_score;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label_best_score;
+		private System.Windows.Forms.Label label_moves;
 	}
 }

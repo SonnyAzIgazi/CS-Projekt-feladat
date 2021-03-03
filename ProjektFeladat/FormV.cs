@@ -7,20 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ProjektFeladat
 {
-    public partial class FormV : Form
-    {
-        public FormV()
-        {
-            InitializeComponent();
-        }
+	public partial class FormV : Form
+	{
+		public FormV()
+		{
+			InitializeComponent();
+		}
 
-        private void FormV_Load(object sender, EventArgs e)
-        {
+		private void FormV_Load(object sender, EventArgs e)
+		{
 
-        }
+		}
 		/* this is what the grid looks like
 		 * grid[x][y]
 		 *    0  1  2  3  x
@@ -44,6 +45,7 @@ namespace ProjektFeladat
 
 		private Dictionary<string, Color> colors = new Dictionary<string, Color>();
 
+		int moves = 0;
 		int score = 0;
 		//listening_for_keys is used in the keypressed() function
 		//we are using this variable to only run a game cycle, when it is allowed
@@ -119,6 +121,7 @@ namespace ProjektFeladat
 			}
 
 			label_score.Text = Convert.ToString(score);
+			label_moves.Text = Convert.ToString(moves);
 
 			//updating the label according to the standing of the game
 			if (game_won)
@@ -431,6 +434,7 @@ namespace ProjektFeladat
 			grid_size = 4;
 			grid = new int[grid_size][];
 			score = 0;
+			moves = 0;
 			game_won = false;
 			game_lost = false;
 
@@ -440,16 +444,16 @@ namespace ProjektFeladat
 			listening_for_keys = true;
 		}
 
-		private void gameover()
+		private void insert_to_sql(bool won, int score, int moves)
 		{
-			if (game_won)
-			{
-				label_gameover.Text = "GAME WON!";
-			}
-			else if (game_lost)
-			{
-				label_gameover.Text = "GAME LOST";
-			}
+			string connStr = "server=35.207.89.236;user=game;database=statistics;password='F^zL!&5TN00@!lhpOxngxNs1K9iJur'";
+			MySqlConnection conn = new MySqlConnection(connStr);
+			conn.Open();
+			string sql = $"INSERT INTO tilegame (game_won, score, moves) VALUES ({won}, {score}, {moves})";
+			MySqlCommand cmd = new MySqlCommand(sql, conn);
+			MySqlDataReader rdr = cmd.ExecuteReader();
+
+			conn.Close();
 		}
 
 		private void keypressed()
@@ -483,6 +487,11 @@ namespace ProjektFeladat
 				//third thig is also a move
 				move(dir, ref move_happened);
 
+				if (move_happened)
+				{
+					moves++;
+				}
+
 				update_ui();
 				System.Threading.Thread.Sleep(sleep_time);
 
@@ -498,6 +507,8 @@ namespace ProjektFeladat
 					game_won = true;
 					listening_for_keys = false;
 
+
+					insert_to_sql(true, score, moves);
 				}
 
 				//checking if the user has lost
@@ -505,6 +516,8 @@ namespace ProjektFeladat
 				{
 					game_lost = true;
 					listening_for_keys = false;
+
+					insert_to_sql(false, score, moves);
 				}
 
 				update_ui();
@@ -612,7 +625,7 @@ namespace ProjektFeladat
 			label1.ForeColor = colors["tile_backcolor"];
 			label7.ForeColor = colors["tile_backcolor"];
 			label_score.ForeColor = colors["form_backcolor"];
-			label_best_score.ForeColor = colors["form_backcolor"];
+			label_moves.ForeColor = colors["form_backcolor"];
 			button_newgame.BackColor = colors["panel_backcolor"];
 			button_exit.BackColor = colors["panel_backcolor"];
 			button_exit.ForeColor = colors["form_backcolor"];
@@ -620,6 +633,8 @@ namespace ProjektFeladat
 
 			add_buttons_to_list();
 			new_game();
+
+			//insert_to_sql(true, 100, 150);
 		}
 
 		private void Form1_KeyDown(object sender, KeyEventArgs e)
