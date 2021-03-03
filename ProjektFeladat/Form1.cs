@@ -46,8 +46,13 @@ namespace ProjektFeladat
         private void button4_Click(object sender, EventArgs e)
         {
             this.Hide();
-            new FormV().ShowDialog(this);
+            new FormS().ShowDialog(this);
             this.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
