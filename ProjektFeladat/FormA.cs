@@ -67,6 +67,26 @@ namespace ProjektFeladat
                             {
                                 MessageBox.Show("Veszitettel");
                                 buttons[x][y].Text = "✸";
+                                for (int px = 0; px < size; px++)
+                                {
+                                    for (int py = 0; py < size; py++)
+                                    {
+                                        if (bomb[px, py])
+                                        {
+                                            if (flagged[px, py])
+                                            {
+                                                buttons[px][py].ForeColor = Color.Green;
+                                            } else
+                                            {
+                                                buttons[px][py].Text = "✸";
+                                                buttons[px][py].ForeColor = Color.Red;
+                                            }
+                                        } else if (flagged[px,py])
+                                        {
+                                            buttons[px][py].ForeColor = Color.Red;
+                                        }
+                                    }
+                                }
                                 running = false;
                             } else
                             {
