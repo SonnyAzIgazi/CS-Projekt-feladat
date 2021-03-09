@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ProjektFeladat
 {
@@ -17,6 +18,8 @@ namespace ProjektFeladat
             InitializeComponent();
             this.Shown += FormA_Load;
         }
+
+        private long start;
 
         private const int size = 10;
         private const int buttonSize = 30;
@@ -33,7 +36,18 @@ namespace ProjektFeladat
 
         private bool running = true;
         private Random rand = new Random();
+        private void insert_to_sql()
+        {
+            string connStr = "server=35.207.89.236;user=game;database=statistics;password='F^zL!&5TN00@!lhpOxngxNs1K9iJur'";
+            MySqlConnection conn = new MySqlConnection(connStr);
+            conn.Open();
+            long current = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+            string sql = $"INSERT INTO aknakereso (seconds, timestamp, bombs, size) VALUES ({current - this.start}, CURRENT_TIMESTAMP, {bombs}, {size})";
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            MySqlDataReader rdr = cmd.ExecuteReader();
 
+            conn.Close();
+        }
         private void buttonClick(object sender, EventArgs e)
         {
             if (running)
@@ -97,6 +111,7 @@ namespace ProjektFeladat
                 }
                 if (checkWin())
                 {
+                    insert_to_sql();
                     MessageBox.Show("Nyertel");
                     running = false;
                 }
@@ -211,6 +226,7 @@ namespace ProjektFeladat
 
         private void FormA_Load(object sender, EventArgs e)
         {
+            start = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
             this.Size = new Size(size * (buttonSize + spaceSize) + 100, size * (buttonSize + spaceSize) + 28);
             this.CenterToScreen();
 
