@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ProjektFeladat
 {
@@ -323,6 +324,7 @@ namespace ProjektFeladat
                 if (nyert_e)
                 {
                     nyert = true;
+                    insert_to_sql(seconds,remaining_hints);
                     MessageBox.Show("Gratulálok!Nyert!" + Environment.NewLine + "Pontszáma: " + seconds);
                 }
             }
@@ -364,5 +366,18 @@ namespace ProjektFeladat
                 Application.Exit();
             }
         }
+        
+        //SQL
+        private void insert_to_sql(int seconds, int help)
+		{
+			string connStr = "server=35.207.89.236;user=game;database=statistics;password='F^zL!&5TN00@!lhpOxngxNs1K9iJur'";
+			MySqlConnection conn = new MySqlConnection(connStr);
+			conn.Open();
+			string sql = $"INSERT INTO sudoku (seconds, help) VALUES ({seconds}, {help})";
+			MySqlCommand cmd = new MySqlCommand(sql, conn);
+			MySqlDataReader rdr = cmd.ExecuteReader();
+
+			conn.Close();
+		}
     }
 }
