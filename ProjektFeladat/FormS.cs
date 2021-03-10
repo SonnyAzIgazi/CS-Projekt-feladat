@@ -52,9 +52,11 @@ namespace ProjektFeladat
 
         private void update_DGV()
         {
+            //clear all columns in case there are data left from a previus update
             dataGridView1.Columns.Clear();
 
             label2.Visible = false;
+            //going through the radiobuttons
             if (radioButton1.Checked)
             {
                 conn.Open();
@@ -62,13 +64,16 @@ namespace ProjektFeladat
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
 
+                //creating the the columns from sql in the datagridview
                 for (int i = 0; i < rdr.FieldCount; i++)
                 {
                     dataGridView1.Columns.Add(rdr.GetName(i), rdr.GetName(i));
                 }
 
+                // the table is not empty, copy the rows, else make the label visible
                 if (rdr.HasRows)
                 {
+                    //copying the rows
                     while (rdr.Read())
                     {
                         object[] row = new object[rdr.FieldCount];
@@ -83,6 +88,7 @@ namespace ProjektFeladat
                 }
                 else
                 {
+
                     label2.Visible = true;
                 }
 
@@ -124,7 +130,7 @@ namespace ProjektFeladat
             else if (radioButton3.Checked)
             {
                 conn.Open();
-                string sql = "SELECT * FROM aknakereso";
+                string sql = "SELECT * FROM aknakereso ORDER BY seconds ASC";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 MySqlDataReader rdr = cmd.ExecuteReader();
 
